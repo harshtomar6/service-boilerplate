@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "lodash": "^4.17.20",
     "mongoose": "^5.10.7",
+    "my-empire-common": "git+ssh://git@gitlab.com/teambacktick/my-empire-common",
     "node-fetch": "^2.6.1",
     "on-finished": "^2.3.0",
     "qs": "^6.9.4",

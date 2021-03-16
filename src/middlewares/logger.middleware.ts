@@ -8,8 +8,6 @@
 import Logger from "./../common/logger";
 import { Request, Response, NextFunction } from "express";
 import onFinished from "on-finished";
-import SlackService from "../common/client/slack";
-import appConfig from "../config/appConfig";
 
 interface RequestWithResponseBody extends Request {
   responseBody: string;
@@ -46,7 +44,7 @@ export default function logRequest(
   }
 
   function getIp() {
-    return req.connection.remoteAddress || req.headers["x-forwarded-for"];
+    return req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   }
 
   getResponseBody();
@@ -64,22 +62,7 @@ export default function logRequest(
         { headers: req.headers },
         { responseBody: req.responseBody }
       );
-      const slackService = new SlackService(logger);
-      slackService.sendMessage(
-        `❌ ${getIp()} ${req.method} ${req.originalUrl} ${res.statusCode} ${
-          Date.now() - startTime
-        }ms`,
-        appConfig.SLACK_LOGS_CHANNEL_ID,
-        {
-          ip: <string>getIp(),
-          method: req.method,
-          endpoint: req.originalUrl,
-          status: res.statusCode,
-          body: JSON.stringify(req.body),
-          headers: JSON.stringify(req.headers),
-          responseBody: req.responseBody
-        }
-      );
+      
     } else {
       logger.info(
         `${getIp()} ${req.method} ${req.originalUrl} ${res.statusCode} ${
