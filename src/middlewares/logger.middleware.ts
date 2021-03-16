@@ -5,9 +5,10 @@
  */
 
 // Dependencies
-import Logger from "./../common/logger";
+import { Logger, RelayService } from "my-empire-common";
 import { Request, Response, NextFunction } from "express";
 import onFinished from "on-finished";
+import appConfig from "../config/appConfig";
 
 interface RequestWithResponseBody extends Request {
   responseBody: string;
@@ -18,7 +19,9 @@ export default function logRequest(
   res: Response,
   next: NextFunction
 ) {
-  const logger = new Logger();
+  const logger = new Logger({
+    env: appConfig.NODE_ENV === "production" ? "PRODUCTION" : "DEVELOPMENT"
+  });
 
   const startTime = Date.now();
 
